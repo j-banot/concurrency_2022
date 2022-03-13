@@ -1,2 +1,2 @@
 # Concurrency Theory course at AGH UST
-Course assignments written in Java
+Course assignments written in Java 
