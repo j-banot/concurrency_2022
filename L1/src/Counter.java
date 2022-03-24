@@ -20,11 +20,13 @@ public class Counter {
 // Watek, ktory inkrementuje licznik 10 000 razy
 class IThread extends Thread {
     private final Counter counter;
-    public IThread(Counter cnt) {
+    public int multiplier;
+    public IThread(Counter cnt, int mlt) {
         this.counter = cnt;
+        this.multiplier = mlt;
     }
     public void run() {
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < multiplier; i++) {
             this.counter.inc();
         }
     }
@@ -33,35 +35,36 @@ class IThread extends Thread {
 // Watek, ktory dekrementuje licznik 10 000 razy
 class DThread extends Thread {
     private final Counter counter;
-    public DThread(Counter cnt) {
+    public int multiplier;
+    public DThread(Counter cnt, int mlt) {
         this.counter = cnt;
+        this.multiplier = mlt;
     }
     public void run() {
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < multiplier; i++) {
             this.counter.dec();
         }
     }
 }
 
 class Race {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         List<Integer> histogram = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Counter cnt = new Counter(0);
-            IThread iThread = new IThread(cnt);
-            DThread dThread = new DThread(cnt);
+            int multiplier = 10000;
+            IThread iThread = new IThread(cnt, multiplier);
+            DThread dThread = new DThread(cnt, multiplier);
 
             iThread.start();
-            dThread.start();
-
-            try {
-                iThread.join();
-                dThread.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.print("Thread interrupted");
+            while (cnt.value() != multiplier) {
+                Thread.sleep(10);
             }
 
+            dThread.start();
+            while (cnt.value() != 0) {
+                Thread.sleep(10);
+            }
             System.out.println("stan= " + cnt.value());
             histogram.add(cnt.value());
         }
