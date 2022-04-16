@@ -1,22 +1,52 @@
+import javax.swing.*;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 
-class Producer extends Thread {
-    private Buffer _buf;
+class Consumer extends Thread {
+    private final Buffer _buf;
+    private final String name;
 
+    public Consumer(Buffer _buf, String name) {
+        super(name);
+        this._buf = _buf;
+        this.name = name;
+    }
+
+    @Override
     public void run() {
-        for (int i = 0; i < 100; ++i) {
-            _buf.put(i);
+        for (;;) {
+            System.out.println(this.name + ": consuming value " + _buf.get());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 }
 
-class Consumer extends Thread {
-    private Buffer _buf;
+class Producer extends Thread {
+    private final Buffer _buf;
+    private final String name;
 
+    public Producer(Buffer _buf, String name) {
+        super(name);
+        this._buf = _buf;
+        this.name = name;
+    }
+
+    @Override
     public void run() {
-        for (int i = 0; i < 100; ++i) {
-            System.out.println(_buf.get());
+        for (;;) {
+            Random random = new Random();
+            int i = random.nextInt();
+            System.out.println(this.name + ": producing value " + i);
+            _buf.put(i);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 }
