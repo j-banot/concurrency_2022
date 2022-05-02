@@ -14,9 +14,9 @@ public class Main {
             case "semaphore":
                 program = new ReadersWritersSemaphore();
                 break;
-            case "condition":
-                program = new ReadersWritersSCondition();
-                break;
+//            case "condition":
+//                program = new ReadersWritersCondition();
+//                break;
             default:
                 System.out.println("Error! Wrong 'mode' parameter");
                 return;
@@ -27,7 +27,7 @@ public class Main {
         int reader_sleep = 100;
         int writer_sleep = 100;
 
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             for (int j = 10; j <= 100; j+= 10) {
                 int readers_all = j;
                 int writers_all = i;
@@ -42,6 +42,10 @@ public class Main {
                        writer_sleep
                 );
                 long stop = System.currentTimeMillis();
+
+                System.out.print(writers_all + ";");
+                System.out.print(readers_all + ";");
+                System.out.println((stop - start));
             }
         }
     }
@@ -129,5 +133,4 @@ abstract class ReadersWriters {
     abstract Reader create_reader(int repeat, int sleep);
     abstract Writer create_writer(int repeat, int sleep);
 }
-
 
